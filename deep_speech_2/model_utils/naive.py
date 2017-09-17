@@ -34,7 +34,8 @@ def conv_bn_layer(input, filter_size, num_channels_in, num_channels_out, stride,
         stride=stride,
         padding=padding,
         act=paddle.activation.Linear(),
-        bias_attr=False)
+        bias_attr=False,
+        param_attr= paddle.attr.Param(is_static=True))
     return paddle.layer.batch_norm(input=conv_layer, act=act)
 
 
@@ -54,8 +55,8 @@ def feed_forward_layer(input, size,act):
     ff_layer = paddle.layer.fc(
         input=input,
         size=size,
-        act=act)
-    return ff_layer
+        act=paddle.activation.Linear())
+    return paddle.layer.batch_norm(input=ff_layer, act=act)
 
 def feed_forward_group(input, size, num_stacks):
     """Feed Forward group with layers.
